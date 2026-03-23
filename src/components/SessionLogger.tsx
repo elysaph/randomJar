@@ -17,8 +17,8 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
         <div className="panel p-6">
             <h2 className="text-2xl font-bold mb-4">Log Session</h2>
             <div className="mb-4">
-                <p className="text-slate-600">Category: <span className="text-slate-900 font-bold">{category.name}</span></p>
-                <p className="text-slate-600">Mode: <span className="text-slate-900 font-bold">{mode}</span></p>
+                <p className="text-slate-300">Category: <span className="text-slate-100 font-bold">{category.name}</span></p>
+                <p className="text-slate-300">Mode: <span className="text-slate-100 font-bold">{mode}</span></p>
             </div>
 
             <div className="mb-4">

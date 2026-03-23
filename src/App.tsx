@@ -213,7 +213,7 @@ function App() {
             <div className="app-container">
                 <header className="text-center mb-8">
                     <h1 className="hero-title">Goal-Weighted Lottery</h1>
-                    <p className="hero-subtitle">Let fate guide your growth</p>
+                    <p className="hero-subtitle">Brew discipline, draw your fate.</p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

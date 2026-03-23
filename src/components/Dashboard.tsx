@@ -24,37 +24,37 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="panel p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div className="surface p-4 text-center">
-                    <div className="text-sm text-slate-500">Cycle</div>
+                    <div className="text-sm text-slate-300">Cycle</div>
                     <div className="text-2xl font-bold">{state.cycleStats.cycleNumber}</div>
                 </div>
                 <div className="surface p-4 text-center">
-                    <div className="text-sm text-slate-500">Level</div>
+                    <div className="text-sm text-slate-300">Level</div>
                     <div className="text-2xl font-bold">{state.levelInfo.level}</div>
-                    <div className="text-xs text-slate-500">{state.levelInfo.title}</div>
+                    <div className="text-xs text-slate-300">{state.levelInfo.title}</div>
                 </div>
                 <div className="surface p-4 text-center">
-                    <div className="text-sm text-slate-500">Score</div>
+                    <div className="text-sm text-slate-300">Score</div>
                     <div className={`text-2xl font-bold ${state.cycleStats.score > 0 ? 'text-green-400' :
-                        state.cycleStats.score < 0 ? 'text-red-500' : 'text-amber-600'
+                        state.cycleStats.score < 0 ? 'text-rose-400' : 'text-amber-300'
                         }`}>
                         {state.cycleStats.score}
                     </div>
                 </div>
                 <div className="surface p-4 text-center">
-                    <div className="text-sm text-slate-500">Streak</div>
-                    <div className="text-2xl font-bold text-orange-600">{state.cycleStats.streak}</div>
-                    <div className="text-xs text-slate-500">Best: {state.cycleStats.bestStreak}</div>
+                    <div className="text-sm text-slate-300">Streak</div>
+                    <div className="text-2xl font-bold text-violet-300">{state.cycleStats.streak}</div>
+                    <div className="text-xs text-slate-300">Best: {state.cycleStats.bestStreak}</div>
                 </div>
             </div>
 
             <div className="mb-6">
                 <div className="flex justify-between mb-2">
-                    <span className="text-sm text-slate-500">Cycle Progress</span>
-                    <span className="text-sm text-slate-500">{remainingSlots} slots remaining</span>
+                    <span className="text-sm text-slate-300">Cycle Progress</span>
+                    <span className="text-sm text-slate-300">{remainingSlots} slots remaining</span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
+                <div className="w-full bg-slate-800 rounded-full h-2">
                     <div
-                        className="bg-emerald-500 rounded-full h-2 transition-all duration-300"
+                        className="bg-emerald-400 rounded-full h-2 transition-all duration-300"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -62,20 +62,20 @@ const Dashboard: React.FC<DashboardProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="surface p-3 text-center">
-                    <div className="text-sm text-slate-500">Wins</div>
-                    <div className="text-xl font-bold text-emerald-600">{state.cycleStats.wins}</div>
+                    <div className="text-sm text-slate-300">Wins</div>
+                    <div className="text-xl font-bold text-emerald-300">{state.cycleStats.wins}</div>
                 </div>
                 <div className="surface p-3 text-center">
-                    <div className="text-sm text-slate-500">Losses</div>
-                    <div className="text-xl font-bold text-red-500">{state.cycleStats.losses}</div>
+                    <div className="text-sm text-slate-300">Losses</div>
+                    <div className="text-xl font-bold text-rose-400">{state.cycleStats.losses}</div>
                 </div>
             </div>
 
             {selectedCategory && (
-                <div className="surface p-4 mb-6 border border-orange-200">
+                <div className="surface p-4 mb-6 border border-violet-500/40">
                     <h3 className="font-bold mb-2">Current Draw</h3>
                     <p className="text-lg">{selectedCategory.name}</p>
-                    <p className="text-sm text-slate-500">Mode: {selectedMode}</p>
+                    <p className="text-sm text-slate-300">Mode: {selectedMode}</p>
                 </div>
             )}
 

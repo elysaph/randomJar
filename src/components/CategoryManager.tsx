@@ -86,7 +86,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
     return (
         <div className="panel p-6">
             <h2 className="text-2xl font-bold mb-4">Category Manager</h2>
-            <div className={`mb-4 p-3 rounded-lg text-white ${totalSlots === 15 ? 'bg-emerald-600' : 'bg-orange-500'}`}>
+            <div className={`mb-4 p-3 rounded-lg text-white ${totalSlots === 15 ? 'bg-emerald-600/90' : 'bg-rose-600/90'}`}>
                 Total Slots: {totalSlots} / 15
                 {totalSlots !== 15 && (
                     <p className="text-sm mt-1">Total must equal 15 to start a cycle</p>
@@ -116,7 +116,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                             <div>
                                 <h3 className="font-bold text-lg">{category.name}</h3>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-sm text-slate-600">Slots:</span>
+                                    <span className="text-sm text-slate-300">Slots:</span>
                                     <input
                                         type="number"
                                         min="0"
@@ -143,7 +143,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                                         {mode}
                                         <button
                                             onClick={() => handleDeleteMode(category.id, idx)}
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-rose-400 hover:text-rose-300"
                                         >
                                             ×
                                         </button>

@@ -49,7 +49,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                     <h3 className="font-bold text-lg mb-2">{selectedCategory.name}</h3>
                     {selectedCategory.pbCriteria.length === 0 ? (
-                        <p className="text-slate-500">No PB criteria set for this category</p>
+                        <p className="text-slate-300">No PB criteria set for this category</p>
                     ) : (
                         selectedCategory.pbCriteria.map(pb => (
                             <div key={pb.id} className="surface p-3">
@@ -87,7 +87,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                     </div>
                                 ) : (
                                     <div className="flex justify-between items-center">
-                                        <span className={pb.value ? 'text-emerald-600' : 'text-slate-500'}>
+                                        <span className={pb.value ? 'text-emerald-300' : 'text-slate-300'}>
                                             {pb.value || 'Not set yet'}
                                         </span>
                                         <button
@@ -99,7 +99,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                     </div>
                                 )}
                                 {pb.lastUpdated && pb.value && (
-                                    <div className="text-xs text-slate-500 mt-1">
+                                    <div className="text-xs text-slate-300 mt-1">
                                         Updated: {new Date(pb.lastUpdated).toLocaleDateString()}
                                     </div>
                                 )}
