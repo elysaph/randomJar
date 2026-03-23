@@ -41,6 +41,8 @@ interface SystemQuest {
     done: boolean;
 }
 
+type AmbientPreset = 'softDrone' | 'nocturne' | 'silentFocus';
+
 const DEFAULT_REWARD_RULES: RewardRule[] = [
     { id: 'small', score: 5, label: 'Small reward' },
     { id: 'medium', score: 10, label: 'Medium reward' },
@@ -62,6 +64,7 @@ function App() {
     const [showCategoryManager, setShowCategoryManager] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [ambientAudio, setAmbientAudio] = useState(false);
+    const [ambientPreset, setAmbientPreset] = useState<AmbientPreset>('softDrone');
     const [drawPulse, setDrawPulse] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
     const [cyclePBImproved, setCyclePBImproved] = useState(false);
@@ -100,41 +103,143 @@ function App() {
 
         const startAmbient = async () => {
             audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const mainGain = audioContext.createGain();
-            mainGain.gain.value = 0.015;
-            mainGain.connect(audioContext.destination);
 
-            const drone = audioContext.createOscillator();
-            drone.type = 'triangle';
-            drone.frequency.value = 174;
+            const presetProfiles: Record<AmbientPreset, {
+                masterGain: number;
+                lowPassStart: number;
+                highPass: number;
+                rootFreq: number;
+                fifthFreq: number;
+                airyFreq: number;
+                rootGain: number;
+                fifthGain: number;
+                airyGain: number;
+                gainLfoRate: number;
+                gainLfoAmount: number;
+                filterLfoRate: number;
+                filterLfoAmount: number;
+            }> = {
+                softDrone: {
+                    masterGain: 0.012,
+                    lowPassStart: 680,
+                    highPass: 70,
+                    rootFreq: 174.61,
+                    fifthFreq: 261.63,
+                    airyFreq: 349.23,
+                    rootGain: 0.5,
+                    fifthGain: 0.24,
+                    airyGain: 0.08,
+                    gainLfoRate: 0.07,
+                    gainLfoAmount: 0.003,
+                    filterLfoRate: 0.045,
+                    filterLfoAmount: 110
+                },
+                nocturne: {
+                    masterGain: 0.014,
+                    lowPassStart: 560,
+                    highPass: 62,
+                    rootFreq: 146.83,
+                    fifthFreq: 220,
+                    airyFreq: 293.66,
+                    rootGain: 0.6,
+                    fifthGain: 0.18,
+                    airyGain: 0.05,
+                    gainLfoRate: 0.055,
+                    gainLfoAmount: 0.0025,
+                    filterLfoRate: 0.035,
+                    filterLfoAmount: 85
+                },
+                silentFocus: {
+                    masterGain: 0.008,
+                    lowPassStart: 740,
+                    highPass: 85,
+                    rootFreq: 196,
+                    fifthFreq: 294,
+                    airyFreq: 392,
+                    rootGain: 0.34,
+                    fifthGain: 0.13,
+                    airyGain: 0.02,
+                    gainLfoRate: 0.05,
+                    gainLfoAmount: 0.0012,
+                    filterLfoRate: 0.028,
+                    filterLfoAmount: 45
+                }
+            };
 
-            const shimmer = audioContext.createOscillator();
-            shimmer.type = 'sine';
-            shimmer.frequency.value = 261.63;
+            const profile = presetProfiles[ambientPreset];
 
-            const lfo = audioContext.createOscillator();
-            const lfoGain = audioContext.createGain();
-            lfo.frequency.value = 0.11;
-            lfoGain.gain.value = 12;
+            const outputGain = audioContext.createGain();
+            outputGain.gain.value = profile.masterGain;
+            outputGain.connect(audioContext.destination);
 
-            const filter = audioContext.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 900;
+            const lowPass = audioContext.createBiquadFilter();
+            lowPass.type = 'lowpass';
+            lowPass.frequency.value = profile.lowPassStart;
+            lowPass.Q.value = 0.7;
 
-            drone.connect(filter);
-            shimmer.connect(filter);
-            filter.connect(mainGain);
-            lfo.connect(lfoGain);
-            lfoGain.connect(filter.frequency);
+            const highPass = audioContext.createBiquadFilter();
+            highPass.type = 'highpass';
+            highPass.frequency.value = profile.highPass;
 
-            drone.start();
-            shimmer.start();
-            lfo.start();
+            lowPass.connect(highPass);
+            highPass.connect(outputGain);
+
+            const root = audioContext.createOscillator();
+            root.type = 'sine';
+            root.frequency.value = profile.rootFreq;
+
+            const fifth = audioContext.createOscillator();
+            fifth.type = 'sine';
+            fifth.frequency.value = profile.fifthFreq;
+
+            const airy = audioContext.createOscillator();
+            airy.type = 'triangle';
+            airy.frequency.value = profile.airyFreq;
+
+            const rootGain = audioContext.createGain();
+            rootGain.gain.value = profile.rootGain;
+
+            const fifthGain = audioContext.createGain();
+            fifthGain.gain.value = profile.fifthGain;
+
+            const airyGain = audioContext.createGain();
+            airyGain.gain.value = profile.airyGain;
+
+            root.connect(rootGain);
+            fifth.connect(fifthGain);
+            airy.connect(airyGain);
+            rootGain.connect(lowPass);
+            fifthGain.connect(lowPass);
+            airyGain.connect(lowPass);
+
+            const gainLfo = audioContext.createOscillator();
+            gainLfo.type = 'sine';
+            gainLfo.frequency.value = profile.gainLfoRate;
+            const gainLfoAmount = audioContext.createGain();
+            gainLfoAmount.gain.value = profile.gainLfoAmount;
+            gainLfo.connect(gainLfoAmount);
+            gainLfoAmount.connect(outputGain.gain);
+
+            const filterLfo = audioContext.createOscillator();
+            filterLfo.type = 'sine';
+            filterLfo.frequency.value = profile.filterLfoRate;
+            const filterLfoAmount = audioContext.createGain();
+            filterLfoAmount.gain.value = profile.filterLfoAmount;
+            filterLfo.connect(filterLfoAmount);
+            filterLfoAmount.connect(lowPass.frequency);
+
+            root.start();
+            fifth.start();
+            airy.start();
+            gainLfo.start();
+            filterLfo.start();
 
             cleanup = () => {
-                drone.stop();
-                shimmer.stop();
-                lfo.stop();
+                root.stop();
+                fifth.stop();
+                airy.stop();
+                gainLfo.stop();
+                filterLfo.stop();
                 audioContext?.close();
             };
         };
@@ -148,7 +253,7 @@ function App() {
                 cleanup();
             }
         };
-    }, [ambientAudio]);
+    }, [ambientAudio, ambientPreset]);
 
     useEffect(() => {
         if (selectedCategory && loggerTopRef.current) {
@@ -550,20 +655,6 @@ function App() {
         showMessage('success', 'Quest deleted.');
     };
 
-    const handleDeleteAllCustomQuests = () => {
-        if (customQuests.length === 0) {
-            showMessage('info', 'There are no custom quests to delete.');
-            return;
-        }
-
-        if (!window.confirm('Delete all custom quests?')) {
-            return;
-        }
-
-        setCustomQuests([]);
-        showMessage('success', 'All custom quests deleted.');
-    };
-
     const handleDeleteSystemQuest = (questId: string) => {
         setHiddenSystemQuestIds((prev) => [...prev, questId]);
         showMessage('success', 'Default quest removed from board.');
@@ -735,14 +826,6 @@ function App() {
                     <div className="side-stack">
                         <div className="panel interactive-card">
                             <h3 className="text-lg font-semibold mb-3">Quest Board</h3>
-                            <div className="mb-3 flex justify-end">
-                                <button
-                                    onClick={handleDeleteAllCustomQuests}
-                                    className="btn btn-soft text-xs px-2 py-1"
-                                >
-                                    Delete all custom quests
-                                </button>
-                            </div>
                             <div className="space-y-2">
                                 {systemQuests.map((quest) => (
                                     <div key={quest.label} className="surface p-3 flex justify-between items-center">
@@ -880,6 +963,13 @@ function App() {
                             <span className="hint">Track PB</span>
                         </button>
 
+                        {showPBManager && (
+                            <PBManager
+                                categories={state.categories}
+                                onUpdatePB={handleUpdatePB}
+                            />
+                        )}
+
                         <button
                             onClick={() => setShowCategoryManager(!showCategoryManager)}
                             className="btn btn-secondary rail-button interactive-card"
@@ -887,6 +977,13 @@ function App() {
                             <span>{showCategoryManager ? 'Hide' : 'Show'} Category Manager</span>
                             <span className="hint">Edit Pool</span>
                         </button>
+
+                        {showCategoryManager && (
+                            <CategoryManager
+                                categories={state.categories}
+                                onUpdateCategories={handleUpdateCategories}
+                            />
+                        )}
 
                         <div className="rune-divider"><span>Archive Vault</span></div>
 
@@ -926,12 +1023,23 @@ function App() {
                                             <div className="advanced-label">Witchy Ambience</div>
                                             <div className="advanced-help">Toggle background audio for ritual focus.</div>
                                         </div>
-                                        <button
-                                            onClick={() => setAmbientAudio((prev) => !prev)}
-                                            className={`btn ${ambientAudio ? 'btn-secondary' : 'btn-soft'}`}
-                                        >
-                                            {ambientAudio ? 'On' : 'Off'}
-                                        </button>
+                                        <div className="advanced-audio-controls">
+                                            <select
+                                                value={ambientPreset}
+                                                onChange={(e) => setAmbientPreset(e.target.value as AmbientPreset)}
+                                                className="field text-sm"
+                                            >
+                                                <option value="softDrone">Soft Drone</option>
+                                                <option value="nocturne">Nocturne</option>
+                                                <option value="silentFocus">Silent Focus</option>
+                                            </select>
+                                            <button
+                                                onClick={() => setAmbientAudio((prev) => !prev)}
+                                                className={`btn ${ambientAudio ? 'btn-secondary' : 'btn-soft'}`}
+                                            >
+                                                {ambientAudio ? 'On' : 'Off'}
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="surface advanced-item advanced-column">
@@ -1004,20 +1112,6 @@ function App() {
                                     </div>
                                 </div>
                             </div>
-                        )}
-
-                        {showCategoryManager && (
-                            <CategoryManager
-                                categories={state.categories}
-                                onUpdateCategories={handleUpdateCategories}
-                            />
-                        )}
-
-                        {showPBManager && (
-                            <PBManager
-                                categories={state.categories}
-                                onUpdatePB={handleUpdatePB}
-                            />
                         )}
                     </div>
                 </div>
