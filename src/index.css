@@ -361,6 +361,27 @@ body {
     background: var(--accent-hover);
 }
 
+.btn-draw-pulse {
+    animation: draw-pulse 0.42s ease;
+}
+
+@keyframes draw-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(138, 79, 255, 0);
+    }
+
+    35% {
+        transform: scale(0.985);
+        box-shadow: 0 0 30px rgba(138, 79, 255, 0.58);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 14px rgba(138, 79, 255, 0.38);
+    }
+}
+
 .btn-secondary {
     background: var(--accent-alt);
     color: #fff;
@@ -438,6 +459,87 @@ body {
     opacity: 0.8;
 }
 
+.advanced-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.advanced-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    padding: 0.8rem;
+}
+
+.advanced-label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #dbe6ff;
+}
+
+.advanced-help {
+    margin-top: 0.15rem;
+    font-size: 0.76rem;
+    color: #9fb0d6;
+}
+
+.advanced-item .btn {
+    min-width: 6.2rem;
+}
+
+.advanced-column {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.advanced-inline-grid {
+    margin-top: 0.5rem;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+}
+
+.advanced-inline-grid.punish-grid {
+    grid-template-columns: 1fr auto;
+}
+
+.advanced-list-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border: 1px solid rgba(106, 131, 193, 0.28);
+    background: rgba(12, 20, 44, 0.75);
+    border-radius: 0.65rem;
+    padding: 0.4rem 0.5rem 0.4rem 0.65rem;
+}
+
+.quest-minus {
+    min-height: 1.45rem;
+    min-width: 1.45rem;
+    width: 1.45rem;
+    height: 1.45rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 125, 142, 0.75);
+    background: rgba(172, 49, 74, 0.22);
+    color: #ff8fa1;
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quest-minus:hover {
+    background: rgba(194, 53, 83, 0.35);
+    color: #ffd5db;
+    transform: none;
+}
+
 .toast-success {
     background: linear-gradient(140deg, #0f9f7e 0%, #0d7b64 100%);
 }
@@ -493,6 +595,20 @@ body {
     .rune-divider::before,
     .rune-divider::after {
         width: 26%;
+    }
+
+    .advanced-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .advanced-item .btn {
+        width: 100%;
+    }
+
+    .advanced-inline-grid,
+    .advanced-inline-grid.punish-grid {
+        grid-template-columns: 1fr;
     }
 }
 

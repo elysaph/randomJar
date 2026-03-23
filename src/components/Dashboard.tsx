@@ -9,6 +9,8 @@ interface DashboardProps {
     onResetCycle: () => void;
     selectedCategory: Category | null;
     selectedMode: string;
+    isDrawLocked: boolean;
+    drawPulse: boolean;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -16,7 +18,9 @@ const Dashboard: React.FC<DashboardProps> = ({
     onDraw,
     onResetCycle,
     selectedCategory,
-    selectedMode
+    selectedMode,
+    isDrawLocked,
+    drawPulse
 }) => {
     const remainingSlots = state.activePool.length;
     const progress = ((15 - remainingSlots) / 15) * 100;
@@ -91,14 +95,14 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div className="space-y-3">
                 <button
                     onClick={onDraw}
-                    disabled={state.cycleCompleted || remainingSlots === 0}
-                    className={`w-full btn py-3 ${state.cycleCompleted || remainingSlots === 0
+                    disabled={state.cycleCompleted || remainingSlots === 0 || isDrawLocked}
+                    className={`w-full btn py-3 ${state.cycleCompleted || remainingSlots === 0 || isDrawLocked
                         ? 'btn-disabled'
                         : 'btn-primary'
-                        }`}
+                        } ${drawPulse ? 'btn-draw-pulse' : ''}`}
                 >
                     {state.cycleCompleted ? 'Cycle Complete' :
-                        remainingSlots === 0 ? 'Cycle Ended' : 'Draw Slot'}
+                        remainingSlots === 0 ? 'Cycle Ended' : isDrawLocked ? 'Log Current Session' : 'Draw Slot'}
                 </button>
 
                 {state.cycleCompleted && (

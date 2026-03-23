@@ -20,6 +20,7 @@ export interface Session {
     category: string;
     categoryId: string;
     mode: string;
+    modeValue?: number;
     result: 'WIN' | 'LOSS';
     effortLevel: 'comfortable' | 'normal' | 'rigorous';
     notes: string;
@@ -67,13 +68,13 @@ export const LEVEL_TITLES: Record<number, string> = {
 };
 
 export const EFFORT_LEVELS = {
-    comfortable: { label: 'Comfortable', isWin: false },
-    normal: { label: 'Normal', isWin: false },
-    rigorous: { label: 'Rigorous', isWin: true }
+    comfortable: { label: 'Comfortable', isWin: false, points: -1 },
+    normal: { label: 'Normal', isWin: true, points: 1 },
+    rigorous: { label: 'Rigorous', isWin: true, points: 2 }
 };
 
 export const REWARD_THRESHOLDS: RewardThreshold[] = [
-    { score: 5, reward: '🎮 30 min gaming session' },
-    { score: 10, reward: '🍕 Order your favorite food' },
-    { score: 15, reward: '🎁 Special treat - Buy something you want' }
+    { score: 5, reward: 'Small reward' },
+    { score: 10, reward: 'Medium reward' },
+    { score: 15, reward: 'Large reward' }
 ];

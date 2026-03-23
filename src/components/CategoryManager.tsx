@@ -134,9 +134,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                             </div>
                             <button
                                 onClick={() => setOpenCategoryId((prev) => prev === category.id ? null : category.id)}
-                                className="btn btn-soft px-3 py-1 text-sm"
+                                className="btn btn-soft px-2 py-1 text-xs"
                             >
-                                {openCategoryId === category.id ? 'Close' : 'Configure'}
+                                {openCategoryId === category.id ? 'Close' : 'Edit'}
                             </button>
                         </div>
 

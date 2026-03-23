@@ -6,20 +6,29 @@ import { formatDisplayText } from '../utils/formatting';
 interface SessionLoggerProps {
     category: Category;
     mode: string;
-    onLogSession: (effortLevel: 'comfortable' | 'normal' | 'rigorous', notes: string) => void;
+    onLogSession: (
+        effortLevel: 'comfortable' | 'normal' | 'rigorous',
+        notes: string,
+        modeValue: string,
+        selectedPBId: string,
+        pbValue: string
+    ) => void;
     onCancel: () => void;
 }
 
 const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSession, onCancel }) => {
     const [effortLevel, setEffortLevel] = useState<'comfortable' | 'normal' | 'rigorous'>('normal');
     const [notes, setNotes] = useState('');
+    const [modeValue, setModeValue] = useState('');
+    const [selectedPBId, setSelectedPBId] = useState('');
+    const [pbValue, setPbValue] = useState('');
 
     return (
         <div className="panel interactive-card">
             <h2 className="text-2xl font-bold mb-5">Log Session</h2>
             <div className="mb-5">
                 <p className="text-slate-300">Category: <span className="text-slate-100 font-bold">{formatDisplayText(category.name)}</span></p>
-                <p className="text-slate-300">Mode: <span className="text-slate-100 font-bold">{mode}</span></p>
+                <p className="text-slate-300">Mode: <span className="text-slate-100 font-bold">{formatDisplayText(mode)}</span></p>
             </div>
 
             <div className="mb-5">
@@ -51,9 +60,46 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
                 />
             </div>
 
+            <div className="mb-5">
+                <label className="block text-sm font-medium mb-2">Mode value (optional)</label>
+                <input
+                    type="number"
+                    value={modeValue}
+                    onChange={(e) => setModeValue(e.target.value)}
+                    className="field"
+                    placeholder="Example: 40"
+                />
+            </div>
+
+            <div className="mb-5">
+                <label className="block text-sm font-medium mb-2">PB update (optional)</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <select
+                        value={selectedPBId}
+                        onChange={(e) => setSelectedPBId(e.target.value)}
+                        className="field"
+                    >
+                        <option value="">No PB update</option>
+                        {category.pbCriteria.map((criterion) => (
+                            <option key={criterion.id} value={criterion.id}>
+                                {criterion.label}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        type="number"
+                        value={pbValue}
+                        onChange={(e) => setPbValue(e.target.value)}
+                        className="field"
+                        placeholder="New PB value"
+                        disabled={!selectedPBId}
+                    />
+                </div>
+            </div>
+
             <div className="flex gap-3">
                 <button
-                    onClick={() => onLogSession(effortLevel, notes)}
+                    onClick={() => onLogSession(effortLevel, notes, modeValue, selectedPBId, pbValue)}
                     className="flex-1 btn btn-secondary py-2"
                 >
                     Submit

@@ -93,9 +93,9 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                         </span>
                                         <button
                                             onClick={() => setEditingPB({ id: pb.id, value: pb.value })}
-                                            className="btn btn-soft px-3 py-1 text-sm"
+                                            className="btn btn-soft px-2 py-1 text-xs"
                                         >
-                                            Configure
+                                            Edit
                                         </button>
                                     </div>
                                 )}

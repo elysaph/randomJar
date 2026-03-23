@@ -55,16 +55,19 @@ export const calculateLevelUpdate = (
 };
 
 export const getRewardForScore = (score: number): string | null => {
-    const threshold = REWARD_THRESHOLDS.find(t => score >= t.score);
-    return threshold ? threshold.reward : null;
+    const unlocked = REWARD_THRESHOLDS
+        .filter((threshold) => score >= threshold.score)
+        .sort((a, b) => b.score - a.score)[0];
+
+    return unlocked ? unlocked.reward : null;
 };
 
 export const getPunishmentForScore = (score: number): string | null => {
     if (score < 0) {
         const punishments = [
-            '🔒 Friction: Disable distracting apps for 2 hours',
-            '💪 Effort: Complete one extra mandatory session today',
-            '💰 Financial: Put $5 into a penalty jar'
+            'Friction: Disable distracting apps for 2 hours',
+            'Effort: Complete one extra mandatory session today',
+            'Financial: Monetary loss ($5 to penalty jar)'
         ];
         return punishments[Math.floor(Math.random() * punishments.length)];
     }
