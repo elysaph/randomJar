@@ -26,7 +26,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
     };
 
     return (
-        <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
+        <div className="panel p-6">
             <h2 className="text-2xl font-bold mb-4">Personal Bests</h2>
 
             <div className="mb-4">
@@ -35,7 +35,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                         const cat = categories.find(c => c.id === e.target.value);
                         setSelectedCategory(cat || null);
                     }}
-                    className="w-full bg-gray-700 rounded-lg p-2"
+                    className="field"
                     defaultValue=""
                 >
                     <option value="" disabled>Select a category</option>
@@ -49,10 +49,10 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                     <h3 className="font-bold text-lg mb-2">{selectedCategory.name}</h3>
                     {selectedCategory.pbCriteria.length === 0 ? (
-                        <p className="text-gray-400">No PB criteria set for this category</p>
+                        <p className="text-slate-500">No PB criteria set for this category</p>
                     ) : (
                         selectedCategory.pbCriteria.map(pb => (
-                            <div key={pb.id} className="bg-gray-700 rounded-lg p-3">
+                            <div key={pb.id} className="surface p-3">
                                 <div className="font-semibold mb-1">{pb.label}</div>
                                 {editingPB?.id === pb.id ? (
                                     <div className="flex gap-2">
@@ -64,7 +64,7 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                                     handleUpdatePBValue(selectedCategory.id, pb.id, e.currentTarget.value);
                                                 }
                                             }}
-                                            className="flex-1 bg-gray-600 rounded px-2 py-1"
+                                            className="field flex-1 px-2 py-1"
                                             autoFocus
                                         />
                                         <button
@@ -74,32 +74,32 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                                     handleUpdatePBValue(selectedCategory.id, pb.id, input.value);
                                                 }
                                             }}
-                                            className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded"
+                                            className="btn btn-secondary px-3 py-1"
                                         >
                                             Save
                                         </button>
                                         <button
                                             onClick={() => setEditingPB(null)}
-                                            className="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded"
+                                            className="btn btn-soft px-3 py-1"
                                         >
                                             Cancel
                                         </button>
                                     </div>
                                 ) : (
                                     <div className="flex justify-between items-center">
-                                        <span className={pb.value ? 'text-green-400' : 'text-gray-400'}>
+                                        <span className={pb.value ? 'text-emerald-600' : 'text-slate-500'}>
                                             {pb.value || 'Not set yet'}
                                         </span>
                                         <button
                                             onClick={() => setEditingPB({ id: pb.id, value: pb.value })}
-                                            className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
+                                            className="btn btn-primary px-3 py-1 text-sm"
                                         >
                                             Update
                                         </button>
                                     </div>
                                 )}
                                 {pb.lastUpdated && pb.value && (
-                                    <div className="text-xs text-gray-400 mt-1">
+                                    <div className="text-xs text-slate-500 mt-1">
                                         Updated: {new Date(pb.lastUpdated).toLocaleDateString()}
                                     </div>
                                 )}

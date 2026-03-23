@@ -84,9 +84,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
     const totalSlots = categories.reduce((sum, c) => sum + c.slots, 0);
 
     return (
-        <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
+        <div className="panel p-6">
             <h2 className="text-2xl font-bold mb-4">Category Manager</h2>
-            <div className={`mb-4 p-3 rounded-lg ${totalSlots === 15 ? 'bg-green-900' : 'bg-red-900'}`}>
+            <div className={`mb-4 p-3 rounded-lg text-white ${totalSlots === 15 ? 'bg-emerald-600' : 'bg-orange-500'}`}>
                 Total Slots: {totalSlots} / 15
                 {totalSlots !== 15 && (
                     <p className="text-sm mt-1">Total must equal 15 to start a cycle</p>
@@ -99,11 +99,11 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                     value={newCategoryName}
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     placeholder="New category name"
-                    className="w-full bg-gray-700 rounded-lg p-2 mb-2"
+                    className="field mb-2"
                 />
                 <button
                     onClick={handleAddCategory}
-                    className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg transition"
+                    className="w-full btn btn-primary py-2"
                 >
                     Add Category
                 </button>
@@ -111,25 +111,25 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
 
             <div className="space-y-4 max-h-96 overflow-y-auto">
                 {categories.map(category => (
-                    <div key={category.id} className="bg-gray-700 rounded-lg p-4">
+                    <div key={category.id} className="surface p-4">
                         <div className="flex justify-between items-start mb-3">
                             <div>
                                 <h3 className="font-bold text-lg">{category.name}</h3>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-sm">Slots:</span>
+                                    <span className="text-sm text-slate-600">Slots:</span>
                                     <input
                                         type="number"
                                         min="0"
                                         max="15"
                                         value={category.slots}
                                         onChange={(e) => handleUpdateSlots(category.id, parseInt(e.target.value) || 0)}
-                                        className="w-16 bg-gray-600 rounded px-2 py-1"
+                                        className="field w-16 px-2 py-1"
                                     />
                                 </div>
                             </div>
                             <button
                                 onClick={() => handleDeleteCategory(category.id)}
-                                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
+                                className="btn btn-danger px-3 py-1 text-sm"
                             >
                                 Delete
                             </button>
@@ -139,11 +139,11 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                             <div className="text-sm font-semibold mb-2">Modes:</div>
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {category.modes.map((mode, idx) => (
-                                    <span key={idx} className="bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-2">
+                                    <span key={idx} className="chip">
                                         {mode}
                                         <button
                                             onClick={() => handleDeleteMode(category.id, idx)}
-                                            className="text-red-400 hover:text-red-300"
+                                            className="text-red-500 hover:text-red-700"
                                         >
                                             ×
                                         </button>
@@ -156,11 +156,11 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                                     value={newMode}
                                     onChange={(e) => setNewMode(e.target.value)}
                                     placeholder="New mode"
-                                    className="flex-1 bg-gray-600 rounded px-2 py-1 text-sm"
+                                    className="field flex-1 text-sm"
                                 />
                                 <button
                                     onClick={() => handleAddMode(category.id)}
-                                    className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm"
+                                    className="btn btn-secondary px-3 py-1 text-sm"
                                 >
                                     Add
                                 </button>
@@ -171,7 +171,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                             <div className="text-sm font-semibold mb-2">PB Criteria:</div>
                             <div className="space-y-1 mb-2">
                                 {category.pbCriteria.map(criteria => (
-                                    <div key={criteria.id} className="bg-gray-600 px-2 py-1 rounded text-sm">
+                                    <div key={criteria.id} className="chip rounded-md">
                                         {criteria.label}
                                     </div>
                                 ))}
@@ -182,11 +182,11 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                                     value={newPBCriteria}
                                     onChange={(e) => setNewPBCriteria(e.target.value)}
                                     placeholder="New PB criteria"
-                                    className="flex-1 bg-gray-600 rounded px-2 py-1 text-sm"
+                                    className="field flex-1 text-sm"
                                 />
                                 <button
                                     onClick={() => handleAddPBCriteria(category.id)}
-                                    className="bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded text-sm"
+                                    className="btn btn-primary px-3 py-1 text-sm"
                                 >
                                     Add
                                 </button>

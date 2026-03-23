@@ -199,10 +199,10 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+        <div className="app-shell">
             {message && (
-                <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${message.type === 'success' ? 'bg-green-500' :
-                    message.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                <div className={`toast ${message.type === 'success' ? 'toast-success' :
+                    message.type === 'error' ? 'toast-error' : 'toast-info'
                     }`}>
                     {message.text.split('\n').map((line, i) => (
                         <div key={i}>{line}</div>
@@ -210,10 +210,10 @@ function App() {
                 </div>
             )}
 
-            <div className="container mx-auto p-4">
+            <div className="app-container">
                 <header className="text-center mb-8">
-                    <h1 className="text-4xl font-bold mb-2">Goal-Weighted Lottery</h1>
-                    <p className="text-gray-300">Let fate guide your growth</p>
+                    <h1 className="hero-title">Goal-Weighted Lottery</h1>
+                    <p className="hero-subtitle">Let fate guide your growth</p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -242,14 +242,14 @@ function App() {
                     <div className="space-y-6">
                         <button
                             onClick={() => setShowCategoryManager(!showCategoryManager)}
-                            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition"
+                            className="w-full btn btn-secondary py-2 px-4"
                         >
                             {showCategoryManager ? 'Hide' : 'Show'} Category Manager
                         </button>
 
                         <button
                             onClick={() => setShowPBManager(!showPBManager)}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
+                            className="w-full btn btn-primary py-2 px-4"
                         >
                             {showPBManager ? 'Hide' : 'Show'} Personal Bests
                         </button>

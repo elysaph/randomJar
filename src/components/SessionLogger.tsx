@@ -14,11 +14,11 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
     const [notes, setNotes] = useState('');
 
     return (
-        <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
+        <div className="panel p-6">
             <h2 className="text-2xl font-bold mb-4">Log Session</h2>
             <div className="mb-4">
-                <p className="text-gray-300">Category: <span className="text-white font-bold">{category.name}</span></p>
-                <p className="text-gray-300">Mode: <span className="text-white font-bold">{mode}</span></p>
+                <p className="text-slate-600">Category: <span className="text-slate-900 font-bold">{category.name}</span></p>
+                <p className="text-slate-600">Mode: <span className="text-slate-900 font-bold">{mode}</span></p>
             </div>
 
             <div className="mb-4">
@@ -28,9 +28,9 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
                         <button
                             key={key}
                             onClick={() => setEffortLevel(key as any)}
-                            className={`py-2 px-3 rounded-lg transition ${effortLevel === key
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            className={`btn py-2 px-3 ${effortLevel === key
+                                ? 'btn-primary text-white'
+                                : 'btn-soft'
                                 }`}
                         >
                             {value.label}
@@ -44,7 +44,7 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
                 <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full bg-gray-700 rounded-lg p-2 text-white"
+                    className="field"
                     rows={3}
                     placeholder="What did you accomplish? Any insights?"
                 />
@@ -53,13 +53,13 @@ const SessionLogger: React.FC<SessionLoggerProps> = ({ category, mode, onLogSess
             <div className="flex gap-3">
                 <button
                     onClick={() => onLogSession(effortLevel, notes)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg font-bold transition"
+                    className="flex-1 btn btn-secondary py-2"
                 >
                     Submit
                 </button>
                 <button
                     onClick={onCancel}
-                    className="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-bold transition"
+                    className="flex-1 btn btn-soft py-2"
                 >
                     Cancel
                 </button>
