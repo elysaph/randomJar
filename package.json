@@ -2,12 +2,12 @@
     "name": "goal-weighted-lottery",
     "version": "1.0.0",
     "private": true,
-    "homepage": "https://github.com/elysaph/randomJar",
+    "homepage": "https://elysaph.github.io/randomJar",
     "dependencies": {
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-scripts": "5.0.1",
-        "typescript": "^5.0.0",
+        "typescript": "5.1.6",
         "uuid": "^9.0.0"
     },
     "scripts": {

@@ -9,7 +9,6 @@ interface CategoryManagerProps {
 }
 
 const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateCategories }) => {
-    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newMode, setNewMode] = useState('');
     const [newPBCriteria, setNewPBCriteria] = useState('');

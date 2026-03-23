@@ -1,4 +1,4 @@
-import { Category, REWARD_THRESHOLDS, LEVEL_TITLES } from '../types';
+import { Category, REWARD_THRESHOLDS } from '../types';
 
 export const drawSlot = (pool: string[]): { selectedId: string; newPool: string[] } => {
     if (pool.length === 0) {

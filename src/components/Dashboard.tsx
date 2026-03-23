@@ -1,6 +1,6 @@
 // src/components/Dashboard.tsx
 import React from 'react';
-import { AppState, Category, LEVEL_TITLES } from '../types';
+import { AppState, Category } from '../types';
 
 interface DashboardProps {
     state: AppState;
