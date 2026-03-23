@@ -1,5 +1,4 @@
-// src/utils/storage.ts
-import { AppState } from '../types';
+import { AppState, Category } from '../types';
 import { getDefaultCategories } from '../data/defaultData';
 
 const STORAGE_KEY = 'goal-weighted-lottery';
