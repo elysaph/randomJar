@@ -1,7 +1,8 @@
 import { AppState, Category, LEVEL_TITLES } from '../types';
 import { getDefaultCategories } from '../data/defaultData';
 
-const STORAGE_KEY = 'goal-weighted-lottery';
+const STORAGE_KEY = 'randomJar-save-v1';
+const LEGACY_STORAGE_KEY = 'goal-weighted-lottery';
 
 const createId = (): string => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
@@ -55,6 +56,9 @@ const normalizeSavedState = (raw: unknown): AppState | null => {
         activePool,
         currentDay: Math.max(1, toFiniteNumber(source.currentDay, 1)),
         sessions: Array.isArray(source.sessions) ? source.sessions as AppState['sessions'] : [],
+        sessionHistory: Array.isArray(source.sessionHistory)
+            ? source.sessionHistory as AppState['sessionHistory']
+            : (Array.isArray(source.sessions) ? source.sessions as AppState['sessionHistory'] : []),
         cycleStats: {
             cycleNumber: Math.max(1, toFiniteNumber(source.cycleStats?.cycleNumber, 1)),
             wins: Math.max(0, toFiniteNumber(source.cycleStats?.wins, 0)),
@@ -73,7 +77,7 @@ const normalizeSavedState = (raw: unknown): AppState | null => {
 };
 
 export const getInitialState = (): AppState => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
     if (saved) {
         try {
             const parsed = JSON.parse(saved);
@@ -82,9 +86,11 @@ export const getInitialState = (): AppState => {
                 return normalized;
             }
             localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(LEGACY_STORAGE_KEY);
         } catch (e) {
             console.error('Failed to parse saved state', e);
             localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(LEGACY_STORAGE_KEY);
         }
     }
 
@@ -100,6 +106,7 @@ export const createNewCycle = (): AppState => {
         activePool,
         currentDay: 1,
         sessions: [],
+        sessionHistory: [],
         cycleStats: {
             cycleNumber: 1,
             wins: 0,

@@ -7,14 +7,19 @@ import Dashboard from './components/Dashboard';
 import CategoryManager from './components/CategoryManager';
 import SessionLogger from './components/SessionLogger';
 import PBManager from './components/PBManager';
+import AnalyticsPanel from './components/AnalyticsPanel';
+import { formatDisplayText } from './utils/formatting';
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
     const [state, setState] = useState<AppState>(() => getInitialState());
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [selectedMode, setSelectedMode] = useState<string>('');
+    const [showAnalytics, setShowAnalytics] = useState(false);
     const [showPBManager, setShowPBManager] = useState(false);
     const [showCategoryManager, setShowCategoryManager] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
+    const [ambientAudio, setAmbientAudio] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
     useEffect(() => {
@@ -30,6 +35,62 @@ function App() {
         window.addEventListener('mousemove', updateCursor);
         return () => window.removeEventListener('mousemove', updateCursor);
     }, []);
+
+    useEffect(() => {
+        let audioContext: AudioContext | null = null;
+        let cleanup: (() => void) | null = null;
+
+        const startAmbient = async () => {
+            audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const mainGain = audioContext.createGain();
+            mainGain.gain.value = 0.015;
+            mainGain.connect(audioContext.destination);
+
+            const drone = audioContext.createOscillator();
+            drone.type = 'triangle';
+            drone.frequency.value = 174;
+
+            const shimmer = audioContext.createOscillator();
+            shimmer.type = 'sine';
+            shimmer.frequency.value = 261.63;
+
+            const lfo = audioContext.createOscillator();
+            const lfoGain = audioContext.createGain();
+            lfo.frequency.value = 0.11;
+            lfoGain.gain.value = 12;
+
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 900;
+
+            drone.connect(filter);
+            shimmer.connect(filter);
+            filter.connect(mainGain);
+            lfo.connect(lfoGain);
+            lfoGain.connect(filter.frequency);
+
+            drone.start();
+            shimmer.start();
+            lfo.start();
+
+            cleanup = () => {
+                drone.stop();
+                shimmer.stop();
+                lfo.stop();
+                audioContext?.close();
+            };
+        };
+
+        if (ambientAudio) {
+            startAmbient().catch(() => setAmbientAudio(false));
+        }
+
+        return () => {
+            if (cleanup) {
+                cleanup();
+            }
+        };
+    }, [ambientAudio]);
 
     const showMessage = (type: 'success' | 'error' | 'info', text: string) => {
         setMessage({ type, text });
@@ -64,7 +125,7 @@ function App() {
                 activePool: newPool
             }));
 
-            showMessage('success', `Drawn: ${category.name} - ${mode}`);
+            showMessage('success', `Drawn: ${formatDisplayText(category.name)} - ${formatDisplayText(mode)}`);
         } catch (error) {
             showMessage('error', 'Failed to draw slot');
         }
@@ -87,9 +148,9 @@ function App() {
         const session: Session = {
             id: uuidv4(),
             day: state.currentDay,
-            category: selectedCategory.name,
+            category: formatDisplayText(selectedCategory.name),
             categoryId: selectedCategory.id,
-            mode: selectedMode,
+            mode: formatDisplayText(selectedMode),
             result: isWin ? 'WIN' : 'LOSS',
             effortLevel,
             notes,
@@ -99,6 +160,7 @@ function App() {
         setState(prev => ({
             ...prev,
             sessions: [...prev.sessions, session],
+            sessionHistory: [...prev.sessionHistory, session],
             currentDay: prev.currentDay + 1,
             cycleStats: {
                 ...prev.cycleStats,
@@ -159,6 +221,10 @@ function App() {
     };
 
     const handleResetCycle = () => {
+        if (!window.confirm('Start a new cycle? Your current cycle sessions will reset, but lifetime history stays.')) {
+            return;
+        }
+
         const newPool = generateActivePool(state.categories);
         setState(prev => ({
             ...prev,
@@ -179,6 +245,59 @@ function App() {
         setSelectedMode('');
         showMessage('success', 'New cycle started!');
     };
+
+    const handleExportData = () => {
+        const fileName = `randomJar-save-${new Date().toISOString().slice(0, 10)}.json`;
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMessage('success', 'Save exported successfully.');
+    };
+
+    const handleImportData = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const parsed = JSON.parse(String(reader.result));
+                if (!parsed || !Array.isArray(parsed.categories) || !Array.isArray(parsed.sessions)) {
+                    throw new Error('Invalid save format');
+                }
+
+                if (!window.confirm('Importing will overwrite your current local save. Continue?')) {
+                    return;
+                }
+
+                const importedState: AppState = {
+                    ...getInitialState(),
+                    ...parsed,
+                    sessionHistory: Array.isArray(parsed.sessionHistory)
+                        ? parsed.sessionHistory
+                        : (Array.isArray(parsed.sessions) ? parsed.sessions : []),
+                    lastUpdated: new Date().toISOString()
+                };
+                setState(importedState);
+                showMessage('success', 'Save imported successfully.');
+            } catch (error) {
+                showMessage('error', 'Failed to import save file.');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    };
+
+    const quests = [
+        { label: 'Draw your next challenge', done: Boolean(selectedCategory) },
+        { label: 'Log one rigorous win', done: state.sessions.some(s => s.effortLevel === 'rigorous' && s.result === 'WIN') },
+        { label: 'Finish all slots in current cycle', done: state.activePool.length === 0 || state.cycleCompleted },
+        { label: 'Keep category slots exactly at 15', done: state.categories.reduce((sum, cat) => sum + cat.slots, 0) === 15 }
+    ];
 
     const handleUpdatePB = (categoryId: string, pbEntries: any[]) => {
         setState(prev => ({
@@ -237,8 +356,7 @@ function App() {
             <div className="app-container">
                 <header className="hero-wrap">
                     <div className="hero-card interactive-card">
-                        <div className="hero-tag">Arcane Routine Engine</div>
-                        <h1 className="hero-title">Goal-Weighted Lottery</h1>
+                        <h1 className="hero-title">randomJar</h1>
                         <p className="hero-subtitle">Brew discipline, draw your fate.</p>
                     </div>
                 </header>
@@ -250,7 +368,7 @@ function App() {
                             onDraw={handleDraw}
                             onResetCycle={handleResetCycle}
                             selectedCategory={selectedCategory}
-                            selectedMode={selectedMode}
+                            selectedMode={formatDisplayText(selectedMode)}
                         />
 
                         <div className="rune-divider"><span>Runic Logging Circle</span></div>
@@ -258,7 +376,7 @@ function App() {
                         {selectedCategory && (
                             <SessionLogger
                                 category={selectedCategory}
-                                mode={selectedMode}
+                                mode={formatDisplayText(selectedMode)}
                                 onLogSession={handleLogSession}
                                 onCancel={() => {
                                     setSelectedCategory(null);
@@ -266,15 +384,31 @@ function App() {
                                 }}
                             />
                         )}
+
+                        {showAnalytics && <AnalyticsPanel state={state} />}
                     </div>
 
                     <div className="side-stack">
+                        <div className="panel interactive-card">
+                            <h3 className="text-lg font-semibold mb-3">Quest Board</h3>
+                            <div className="space-y-2">
+                                {quests.map((quest) => (
+                                    <div key={quest.label} className="surface p-3 flex justify-between items-center">
+                                        <span className="text-sm text-slate-200">{quest.label}</span>
+                                        <span className={`text-xs font-bold ${quest.done ? 'text-emerald-300' : 'text-amber-300'}`}>
+                                            {quest.done ? 'Done' : 'Pending'}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                         <button
-                            onClick={() => setShowCategoryManager(!showCategoryManager)}
-                            className="btn btn-secondary rail-button interactive-card"
+                            onClick={() => setShowAnalytics(!showAnalytics)}
+                            className="btn btn-soft rail-button interactive-card"
                         >
-                            <span>{showCategoryManager ? 'Hide' : 'Show'} Category Manager</span>
-                            <span className="hint">Edit Pool</span>
+                            <span>{showAnalytics ? 'Hide' : 'Show'} Analytics</span>
+                            <span className="hint">History</span>
                         </button>
 
                         <button
@@ -285,7 +419,42 @@ function App() {
                             <span className="hint">Track PB</span>
                         </button>
 
+                        <button
+                            onClick={() => setShowCategoryManager(!showCategoryManager)}
+                            className="btn btn-secondary rail-button interactive-card"
+                        >
+                            <span>{showCategoryManager ? 'Hide' : 'Show'} Category Manager</span>
+                            <span className="hint">Edit Pool</span>
+                        </button>
+
                         <div className="rune-divider"><span>Archive Vault</span></div>
+
+                        <button
+                            onClick={() => setShowAdvanced(!showAdvanced)}
+                            className="btn btn-soft rail-button interactive-card"
+                        >
+                            <span>{showAdvanced ? 'Hide' : 'Show'} Advanced Setup</span>
+                            <span className="hint">Config</span>
+                        </button>
+
+                        {showAdvanced && (
+                            <div className="panel interactive-card">
+                                <h3 className="text-lg font-semibold mb-3">Control Shelf</h3>
+                                <div className="space-y-2">
+                                    <button onClick={handleExportData} className="btn btn-soft w-full">Export save data</button>
+                                    <label className="btn btn-soft w-full text-center cursor-pointer">
+                                        Import save data
+                                        <input type="file" accept="application/json" className="hidden" onChange={handleImportData} />
+                                    </label>
+                                    <button
+                                        onClick={() => setAmbientAudio((prev) => !prev)}
+                                        className={`btn w-full ${ambientAudio ? 'btn-secondary' : 'btn-soft'}`}
+                                    >
+                                        {ambientAudio ? 'Disable' : 'Enable'} Witchy ambience
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         {showCategoryManager && (
                             <CategoryManager

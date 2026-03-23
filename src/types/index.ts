@@ -45,6 +45,7 @@ export interface AppState {
     activePool: string[]; // Array of category IDs
     currentDay: number;
     sessions: Session[];
+    sessionHistory: Session[];
     cycleStats: CycleStats;
     levelInfo: LevelInfo;
     cycleCompleted: boolean;

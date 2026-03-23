@@ -66,7 +66,7 @@
                 return;
             }
             if (root.childElementCount === 1 && root.textContent && root.textContent.indexOf('Loading randomJar') !== -1) {
-                root.innerHTML = '<div class="boot-screen"><div class="boot-card"><h1 class="boot-title">App failed to start</h1><p class="boot-text">Try hard refresh (Ctrl+Shift+R), clear local storage key <strong>goal-weighted-lottery</strong>, and restart with <strong>npm run start</strong>.</p></div></div>';
+                root.innerHTML = '<div class="boot-screen"><div class="boot-card"><h1 class="boot-title">App failed to start</h1><p class="boot-text">Try hard refresh (Ctrl+Shift+R), clear local storage keys <strong>randomJar-save-v1</strong> and <strong>goal-weighted-lottery</strong>, and restart with <strong>npm run start</strong>.</p></div></div>';
             }
         }, 5000);
     </script>

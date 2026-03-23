@@ -24,6 +24,7 @@ const showFatalError = (message: string) => {
 
     const retryButton = document.getElementById('retry-app-btn');
     retryButton?.addEventListener('click', () => {
+        localStorage.removeItem('randomJar-save-v1');
         localStorage.removeItem('goal-weighted-lottery');
         window.location.reload();
     });

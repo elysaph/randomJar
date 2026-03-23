@@ -1,6 +1,7 @@
 // src/components/PBManager.tsx
 import React, { useState } from 'react';
 import { Category, PBEntry } from '../types';
+import { formatDisplayText } from '../utils/formatting';
 
 interface PBManagerProps {
     categories: Category[];
@@ -40,14 +41,14 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                 >
                     <option value="" disabled>Select a category</option>
                     {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        <option key={cat.id} value={cat.id}>{formatDisplayText(cat.name)}</option>
                     ))}
                 </select>
             </div>
 
             {selectedCategory && (
                 <div className="space-y-3 max-h-[32rem] overflow-y-auto pr-1">
-                    <h3 className="font-bold text-lg mb-3">{selectedCategory.name}</h3>
+                    <h3 className="font-bold text-lg mb-3">{formatDisplayText(selectedCategory.name)}</h3>
                     {selectedCategory.pbCriteria.length === 0 ? (
                         <p className="text-slate-300">No PB criteria set for this category</p>
                     ) : (
@@ -92,9 +93,9 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
                                         </span>
                                         <button
                                             onClick={() => setEditingPB({ id: pb.id, value: pb.value })}
-                                            className="btn btn-primary px-3 py-1 text-sm"
+                                            className="btn btn-soft px-3 py-1 text-sm"
                                         >
-                                            Update
+                                            Configure
                                         </button>
                                     </div>
                                 )}

@@ -26,6 +26,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
     }
 
     private handleReset = () => {
+        localStorage.removeItem('randomJar-save-v1');
         localStorage.removeItem('goal-weighted-lottery');
         window.location.reload();
     };

@@ -1,6 +1,7 @@
 // src/components/Dashboard.tsx
 import React from 'react';
 import { AppState, Category } from '../types';
+import { formatDisplayText } from '../utils/formatting';
 
 interface DashboardProps {
     state: AppState;
@@ -52,11 +53,19 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <span className="text-sm text-slate-300">Cycle Progress</span>
                     <span className="text-sm text-slate-300">{remainingSlots} slots remaining</span>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-2">
-                    <div
-                        className="bg-emerald-400 rounded-full h-2 transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                    />
+                <div className="flex items-end gap-4">
+                    <div className="potion-hud" aria-hidden="true">
+                        <div className="potion-neck" />
+                        <div className="potion-body">
+                            <div className="potion-fill" style={{ height: `${progress}%` }} />
+                        </div>
+                    </div>
+                    <div className="w-full bg-slate-800 rounded-full h-2">
+                        <div
+                            className="bg-emerald-400 rounded-full h-2 transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -74,7 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             {selectedCategory && (
                 <div className="surface p-5 mb-7 border border-violet-500/40">
                     <h3 className="font-bold mb-2">Current Draw</h3>
-                    <p className="text-lg">{selectedCategory.name}</p>
+                    <p className="text-lg">{formatDisplayText(selectedCategory.name)}</p>
                     <p className="text-sm text-slate-300">Mode: {selectedMode}</p>
                 </div>
             )}
