@@ -84,16 +84,16 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
     const totalSlots = categories.reduce((sum, c) => sum + c.slots, 0);
 
     return (
-        <div className="panel p-6">
-            <h2 className="text-2xl font-bold mb-4">Category Manager</h2>
-            <div className={`mb-4 p-3 rounded-lg text-white ${totalSlots === 15 ? 'bg-emerald-600/90' : 'bg-rose-600/90'}`}>
+        <div className="panel interactive-card">
+            <h2 className="text-2xl font-bold mb-5">Category Manager</h2>
+            <div className={`mb-5 p-3 rounded-lg text-white ${totalSlots === 15 ? 'bg-emerald-600/90' : 'bg-rose-600/90'}`}>
                 Total Slots: {totalSlots} / 15
                 {totalSlots !== 15 && (
                     <p className="text-sm mt-1">Total must equal 15 to start a cycle</p>
                 )}
             </div>
 
-            <div className="mb-4">
+            <div className="mb-5">
                 <input
                     type="text"
                     value={newCategoryName}
@@ -109,9 +109,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ categories, onUpdateC
                 </button>
             </div>
 
-            <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div className="space-y-4 max-h-[32rem] overflow-y-auto pr-1">
                 {categories.map(category => (
-                    <div key={category.id} className="surface p-4">
+                    <div key={category.id} className="surface p-5">
                         <div className="flex justify-between items-start mb-3">
                             <div>
                                 <h3 className="font-bold text-lg">{category.name}</h3>

@@ -21,6 +21,16 @@ function App() {
         saveState(state);
     }, [state]);
 
+    useEffect(() => {
+        const updateCursor = (event: MouseEvent) => {
+            document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
+            document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
+        };
+
+        window.addEventListener('mousemove', updateCursor);
+        return () => window.removeEventListener('mousemove', updateCursor);
+    }, []);
+
     const showMessage = (type: 'success' | 'error' | 'info', text: string) => {
         setMessage({ type, text });
         setTimeout(() => setMessage(null), 5000);
@@ -200,6 +210,20 @@ function App() {
 
     return (
         <div className="app-shell">
+            <div className="cursor-glow" />
+            <div className="potion-particles" aria-hidden="true">
+                {[8, 16, 24, 33, 41, 50, 58, 67, 75, 84, 92].map((left, idx) => (
+                    <span
+                        key={left}
+                        className={`potion-particle ${idx % 2 === 0 ? 'violet' : ''}`}
+                        style={{
+                            left: `${left}%`,
+                            animationDuration: `${8 + (idx % 5) * 1.5}s`,
+                            animationDelay: `${-idx * 1.15}s`
+                        }}
+                    />
+                ))}
+            </div>
             {message && (
                 <div className={`toast ${message.type === 'success' ? 'toast-success' :
                     message.type === 'error' ? 'toast-error' : 'toast-info'
@@ -211,13 +235,16 @@ function App() {
             )}
 
             <div className="app-container">
-                <header className="text-center mb-8">
-                    <h1 className="hero-title">Goal-Weighted Lottery</h1>
-                    <p className="hero-subtitle">Brew discipline, draw your fate.</p>
+                <header className="hero-wrap">
+                    <div className="hero-card interactive-card">
+                        <div className="hero-tag">Arcane Routine Engine</div>
+                        <h1 className="hero-title">Goal-Weighted Lottery</h1>
+                        <p className="hero-subtitle">Brew discipline, draw your fate.</p>
+                    </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="layout-grid">
+                    <div className="main-stack">
                         <Dashboard
                             state={state}
                             onDraw={handleDraw}
@@ -225,6 +252,8 @@ function App() {
                             selectedCategory={selectedCategory}
                             selectedMode={selectedMode}
                         />
+
+                        <div className="rune-divider"><span>Runic Logging Circle</span></div>
 
                         {selectedCategory && (
                             <SessionLogger
@@ -239,20 +268,24 @@ function App() {
                         )}
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="side-stack">
                         <button
                             onClick={() => setShowCategoryManager(!showCategoryManager)}
-                            className="w-full btn btn-secondary py-2 px-4"
+                            className="btn btn-secondary rail-button interactive-card"
                         >
-                            {showCategoryManager ? 'Hide' : 'Show'} Category Manager
+                            <span>{showCategoryManager ? 'Hide' : 'Show'} Category Manager</span>
+                            <span className="hint">Edit Pool</span>
                         </button>
 
                         <button
                             onClick={() => setShowPBManager(!showPBManager)}
-                            className="w-full btn btn-primary py-2 px-4"
+                            className="btn btn-primary rail-button interactive-card"
                         >
-                            {showPBManager ? 'Hide' : 'Show'} Personal Bests
+                            <span>{showPBManager ? 'Hide' : 'Show'} Personal Bests</span>
+                            <span className="hint">Track PB</span>
                         </button>
+
+                        <div className="rune-divider"><span>Archive Vault</span></div>
 
                         {showCategoryManager && (
                             <CategoryManager

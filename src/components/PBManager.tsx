@@ -26,10 +26,10 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
     };
 
     return (
-        <div className="panel p-6">
-            <h2 className="text-2xl font-bold mb-4">Personal Bests</h2>
+        <div className="panel interactive-card">
+            <h2 className="text-2xl font-bold mb-5">Personal Bests</h2>
 
-            <div className="mb-4">
+            <div className="mb-5">
                 <select
                     onChange={(e) => {
                         const cat = categories.find(c => c.id === e.target.value);
@@ -46,13 +46,13 @@ const PBManager: React.FC<PBManagerProps> = ({ categories, onUpdatePB }) => {
             </div>
 
             {selectedCategory && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                    <h3 className="font-bold text-lg mb-2">{selectedCategory.name}</h3>
+                <div className="space-y-3 max-h-[32rem] overflow-y-auto pr-1">
+                    <h3 className="font-bold text-lg mb-3">{selectedCategory.name}</h3>
                     {selectedCategory.pbCriteria.length === 0 ? (
                         <p className="text-slate-300">No PB criteria set for this category</p>
                     ) : (
                         selectedCategory.pbCriteria.map(pb => (
-                            <div key={pb.id} className="surface p-3">
+                            <div key={pb.id} className="surface p-4">
                                 <div className="font-semibold mb-1">{pb.label}</div>
                                 {editingPB?.id === pb.id ? (
                                     <div className="flex gap-2">
