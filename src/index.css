@@ -3,28 +3,251 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-0: #f7f1e6;
+    --bg-1: #e6f1fb;
+    --bg-2: #e6f4e5;
+    --ink-strong: #1b2430;
+    --ink-muted: #556174;
+    --panel: rgba(255, 255, 255, 0.76);
+    --panel-deep: rgba(255, 255, 255, 0.9);
+    --panel-border: rgba(255, 255, 255, 0.78);
+    --accent: #d85f3b;
+    --accent-hover: #bf4f2f;
+    --accent-alt: #1f7a68;
+    --accent-alt-hover: #156252;
+    --ok: #1f9d55;
+    --warn: #b45309;
+    --bad: #c2412d;
+}
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-        sans-serif;
+    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(140deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-2) 100%);
+    color: var(--ink-strong);
+}
+
+#root {
+    min-height: 100vh;
+}
+
+.app-shell {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    color: var(--ink-strong);
+}
+
+.app-shell::before,
+.app-shell::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(22px);
+    opacity: 0.45;
+}
+
+.app-shell::before {
+    width: 340px;
+    height: 340px;
+    top: -90px;
+    left: -80px;
+    border-radius: 999px;
+    background: radial-gradient(circle, #f4b97a 0%, rgba(244, 185, 122, 0) 72%);
+}
+
+.app-shell::after {
+    width: 300px;
+    height: 300px;
+    right: -60px;
+    bottom: 6%;
+    border-radius: 999px;
+    background: radial-gradient(circle, #95d8c8 0%, rgba(149, 216, 200, 0) 70%);
+}
+
+.app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.25rem;
+}
+
+.hero-title {
+    font-family: 'Bebas Neue', 'Space Grotesk', sans-serif;
+    letter-spacing: 0.06em;
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    line-height: 0.92;
+    margin-bottom: 0.25rem;
+    color: #1b2430;
+}
+
+.hero-subtitle {
+    color: var(--ink-muted);
+    font-weight: 500;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 16px 40px rgba(47, 56, 68, 0.13);
+}
+
+.surface {
+    background: var(--panel-deep);
+    border: 1px solid rgba(227, 236, 248, 0.95);
+    border-radius: 0.8rem;
+}
+
+.field {
+    width: 100%;
+    border-radius: 0.7rem;
+    border: 1px solid #cfd8e5;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ink-strong);
+    padding: 0.55rem 0.7rem;
+    outline: none;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.field:focus {
+    border-color: #8fb4ee;
+    box-shadow: 0 0 0 4px rgba(143, 180, 238, 0.2);
+}
+
+.btn {
+    border-radius: 0.7rem;
+    font-weight: 700;
+    transition: transform 0.16s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+.btn-secondary {
+    background: var(--accent-alt);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: var(--accent-alt-hover);
+}
+
+.btn-soft {
+    background: #e7eef8;
+    color: #263445;
+}
+
+.btn-soft:hover {
+    background: #dae5f4;
+}
+
+.btn-danger {
+    background: #e87563;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #d9614f;
+}
+
+.btn-disabled,
+.btn-disabled:hover {
+    background: #b8c2d1;
+    color: #f8fafc;
+    transform: none;
+    cursor: not-allowed;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    background: #f1f6fc;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.82rem;
+}
+
+.toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    border-radius: 0.8rem;
+    padding: 0.75rem 0.95rem;
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.28);
+    animation: toast-in 0.25s ease;
+}
+
+.toast-success {
+    background: linear-gradient(140deg, #1d9a58 0%, #0e7f42 100%);
+}
+
+.toast-error {
+    background: linear-gradient(140deg, #d24a36 0%, #b83727 100%);
+}
+
+.toast-info {
+    background: linear-gradient(140deg, #176f95 0%, #115778 100%);
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1f2937;
+    background: rgba(239, 244, 251, 0.7);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #4b5563;
-    border-radius: 4px;
+    background: #c0cad8;
+    border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
+    background: #a8b5c8;
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        padding: 0.9rem;
+    }
+
+    .toast {
+        left: 0.75rem;
+        right: 0.75rem;
+        top: 0.75rem;
+    }
 }
