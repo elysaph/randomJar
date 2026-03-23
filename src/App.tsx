@@ -103,7 +103,7 @@ function App() {
         setSelectedCategory(null);
         setSelectedMode('');
 
-        if (prev.activePool.length === 1) {
+        if (state.activePool.length === 1) {
             handleCycleEnd();
         } else {
             showMessage('success', `Session logged: ${isWin ? 'WIN' : 'LOSS'}! Streak: ${newStreak}`);
@@ -141,7 +141,7 @@ function App() {
             }
         }));
 
-        let messageText = `Cycle ${prev.cycleStats.cycleNumber} completed! Score: ${finalScore}`;
+        let messageText = `Cycle ${state.cycleStats.cycleNumber} completed! Score: ${finalScore}`;
         if (reward) messageText += `\n🎉 Reward: ${reward}`;
         if (punishment) messageText += `\n⚠️ Punishment: ${punishment}`;
 

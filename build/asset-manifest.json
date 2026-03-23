@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/elysaph/randomJar/static/css/main.cadfb036.css",
+    "main.js": "/elysaph/randomJar/static/js/main.816ec114.js",
+    "index.html": "/elysaph/randomJar/index.html",
+    "main.cadfb036.css.map": "/elysaph/randomJar/static/css/main.cadfb036.css.map",
+    "main.816ec114.js.map": "/elysaph/randomJar/static/js/main.816ec114.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cadfb036.css",
+    "static/js/main.816ec114.js"
+  ]
+}
